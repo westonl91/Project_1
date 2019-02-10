@@ -5,6 +5,8 @@ var zip = 0;
 var size_choice = "";
 var energy_choice = "";
 var my_breeds = [];
+var random_breed_index = 0;
+var random_breed = '';
 
 var small_dogs = [0, 17, 18, 23, 29, 40, 42, 48, 51, 59, 61, 62, 74, 78, 91, 119, 130, 132, 144, 147, 148, 149, 150, 155, 156, 157, 158, 166, 169, 170, 174, 175, 177, 186, 188, 191, 195, 205, 208, 209, 214, 215, 218, 222, 236, 237, 239, 240, 245, 246, 250, 256];
 var medium_dogs = [1, 2, 7, 11, 14, 19, 20, 21, 39, 45, 47, 52, 54, 67, 70, 76, 77, 83, 84, 90, 95, 97, 98, 102, 104, 110, 118, 123, 124, 127, 136, 137, 154, 167, 168, 171, 178, 180, 181, 183, 185, 189, 192, 194, 206, 211, 217, 219, 225, 228, 231, 232, 244, 247, 248, 252, 254];
@@ -16,36 +18,11 @@ var moderate_energy = [1, 4, 5, 7, 10, 12, 17, 19, 20, 23, 28, 30, 33, 34, 36, 3
 var high_energy = [0, 2, 8, 11, 14, 18, 21, 22, 25, 26, 27, 29, 39, 44, 45, 47, 48, 49, 51, 61, 67, 74, 76, 77, 79, 86, 87, 88, 92, 97, 104, 106, 108, 112, 118, 119, 124, 126, 128, 130, 143, 144, 148, 149, 150, 154, 155, 156, 157, 166, 167, 168, 169, 170, 171, 174, 175, 180, 185, 186, 188, 189, 192, 194, 195, 205, 206, 218, 222, 225, 232, 239, 240, 241, 243, 246, 250, 252, 256];
 // Within $.ajax{...} is where we fill out our query 
 
-$.ajax({
-    url: url + 'breed.list',
-    jsonp: "callback",
-    dataType: "jsonp",
-    data: {
-        key: '136945eb0dffcf53d2e578286bb0ed92',
-        animal: 'dog',
-        //size: 'S',
-        //'location': zip,
-        //output: 'basic',
-        format: 'json'
-    }, success: function (response) {
-        //console.log(response.petfinder.breeds.breed);
-        var breeds_list = response.petfinder.breeds.breed;
-        for (var i = 0; i < breeds_list.length; i++) {
-            full_breeds.push(breeds_list[i].$t);
-        }
-
-        //new_array(low_energy, "low_en_breeds");
 
 
-        console.log(full_breeds);
-
-        //$("#temp").text(full_breeds);
-    }
-});
-
-$.urlParam = function(name){
-	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-	return results[1] || 0;
+$.urlParam = function (name) {
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    return results[1] || 0;
 }
 
 
@@ -58,8 +35,8 @@ function new_array(my_array, str) {
 }
 
 function find_my_breeds(array1, array2) {
-    for (var i=0; i<array1.length; i++) {
-        for (var j=0; j<array2.length; j++){
+    for (var i = 0; i < array1.length; i++) {
+        for (var j = 0; j < array2.length; j++) {
             if (array1[i] === array2[j]) {
                 my_breeds.push(array1[i]);
             }
@@ -67,7 +44,7 @@ function find_my_breeds(array1, array2) {
     }
 }
 
-function get_choices () {
+function get_choices() {
     size_choice = $.urlParam('size');
     energy_choice = $.urlParam('energy');
 
@@ -87,7 +64,7 @@ function get_choices () {
         } else {
             find_my_breeds(medium_dogs, high_energy);
         }
-    } else if (size_choice=== "L") {
+    } else if (size_choice === "L") {
         if (energy_choice === "low") {
             find_my_breeds(large_dogs, low_energy);
         } else if (energy_choice === "moderate") {
@@ -106,13 +83,59 @@ function get_choices () {
     }
 }
 
-$(document).ready(function () {
-    //$("#Submit").on("click", function () {
-        zip = $.urlParam('zip');
-        get_choices();
-        var random_breed_index = Math.floor(Math.random() * my_breeds.length);
-        var random_breed = full_breeds[my_breeds[random_breed_index]];
+function pick_random() {
+    random_breed_index = Math.floor(Math.random() * my_breeds.length);
+    random_breed = full_breeds[my_breeds[random_breed_index]];
+}
 
+$(document).ready(function () {
+    $('.carousel').carousel();
+
+    $.ajax({
+        url: url + 'breed.list',
+        jsonp: "callback",
+        dataType: "jsonp",
+        data: {
+            key: '136945eb0dffcf53d2e578286bb0ed92',
+            animal: 'dog',
+            format: 'json'
+        }, success: function (response) {
+            //console.log(response.petfinder.breeds.breed);
+            var breeds_list = response.petfinder.breeds.breed;
+            for (var i = 0; i < breeds_list.length; i++) {
+                full_breeds.push(breeds_list[i].$t);
+            }
+
+            console.log(full_breeds);
+
+            zip = $.urlParam('zip');
+            get_choices();
+            pick_random();
+            console.log(my_breeds[random_breed_index]);
+            $.ajax({
+                url: url + 'pet.getRandom',
+                jsonp: "callback",
+                dataType: "jsonp",
+                data: {
+                    key: '136945eb0dffcf53d2e578286bb0ed92',
+                    animal: 'dog',
+                    size: size_choice,
+                    breed: random_breed,
+                    location: zip,
+                    output: 'basic',
+                    format: 'json'
+                }, success: function (response) {
+                    console.log(response.petfinder.pet, random_breed, random_breed_index);
+                    //console.log(response.petfinder.pet.media.photos.photo[0].$t);
+                    var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
+                    $("#pic1").attr('src', pet_image);
+                }
+            });
+        }
+    });
+
+    $("#next").on("click", function () {
+        pick_random();
         $.ajax({
             url: url + 'pet.getRandom',
             jsonp: "callback",
@@ -122,15 +145,16 @@ $(document).ready(function () {
                 animal: 'dog',
                 size: size_choice,
                 breed: random_breed,
-                location: '95814 CA',
+                location: zip,
                 output: 'basic',
                 format: 'json'
             }, success: function (response) {
-                console.log(response.petfinder.pet, random_breed, size_choice);
-                console.log(my_breeds);
-                console.log(zip);
+                console.log(response.petfinder.pet, random_breed, random_breed_index);
+                //console.log(response.petfinder.pet.media.photos.photo[0].$t);
+                var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
+                $("#pic2").attr('src', pet_image);
             }
         });
+    });
 
-    //});
 });
