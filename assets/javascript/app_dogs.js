@@ -1,4 +1,4 @@
-var url = 'http://api.petfinder.com/';
+var url = '//api.petfinder.com/';
 
 var full_breeds = [];
 var zip = 0;
