@@ -16,7 +16,6 @@ var xl_dogs = [4, 12, 28, 37, 41, 50, 53, 81, 113, 114, 115, 129, 141, 146, 152,
 var low_energy = [50, 66, 83, 91, 114, 129, 152, 177];
 var moderate_energy = [1, 4, 5, 7, 10, 12, 17, 19, 20, 23, 28, 30, 33, 34, 36, 37, 40, 41, 42, 43, 46, 52, 53, 54, 59, 60, 62, 64, 68, 70, 71, 75, 78, 81, 84, 85, 90, 95, 98, 99, 102, 105, 109, 110, 111, 113, 115, 116, 123, 127, 132, 136, 137, 140, 141, 146, 147, 158, 163, 165, 172, 173, 178, 181, 183, 187, 191, 196, 198, 199, 201, 202, 203, 207, 208, 209, 211, 214, 215, 216, 217, 219, 226, 228, 231, 235, 236, 237, 242, 244, 245, 247, 248, 254];
 var high_energy = [0, 2, 8, 11, 14, 18, 21, 22, 25, 26, 27, 29, 39, 44, 45, 47, 48, 49, 51, 61, 67, 74, 76, 77, 79, 86, 87, 88, 92, 97, 104, 106, 108, 112, 118, 119, 124, 126, 128, 130, 143, 144, 148, 149, 150, 154, 155, 156, 157, 166, 167, 168, 169, 170, 171, 174, 175, 180, 185, 186, 188, 189, 192, 194, 195, 205, 206, 218, 222, 225, 232, 239, 240, 241, 243, 246, 250, 252, 256];
-// Within $.ajax{...} is where we fill out our query 
 
 
 
@@ -88,6 +87,7 @@ function pick_random() {
     random_breed = full_breeds[my_breeds[random_breed_index]];
 }
 
+
 $(document).ready(function () {
     $('.carousel').carousel();
 
@@ -100,7 +100,6 @@ $(document).ready(function () {
             animal: 'dog',
             format: 'json'
         }, success: function (response) {
-            //console.log(response.petfinder.breeds.breed);
             var breeds_list = response.petfinder.breeds.breed;
             for (var i = 0; i < breeds_list.length; i++) {
                 full_breeds.push(breeds_list[i].$t);
@@ -125,10 +124,58 @@ $(document).ready(function () {
                     output: 'basic',
                     format: 'json'
                 }, success: function (response) {
-                    console.log(response.petfinder.pet, random_breed, random_breed_index);
-                    //console.log(response.petfinder.pet.media.photos.photo[0].$t);
-                    var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
-                    $("#pic1").attr('src', pet_image);
+                    if (response.petfinder.pet !== undefined) {
+                        console.log(response.petfinder.pet, random_breed, random_breed_index);
+
+                        if (response.petfinder.pet.media.photos !== undefined) {
+                            var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
+                            $("#pic1").attr('src', pet_image);
+                        } else {
+                            $("#pic1").attr('src', "./assets/images/Missing-Image_Dog.png")
+                        }
+                        var pet_name = response.petfinder.pet.name.$t;
+                        var pet_info = response.petfinder.pet.description.$t;
+                        $("#pet_name1").text(pet_name);
+                        $("#pet_info1").text(pet_info);
+                        pick_random();
+                    }
+                    $.ajax({
+                        url: url + 'pet.getRandom',
+                        jsonp: "callback",
+                        dataType: "jsonp",
+                        data: {
+                            key: '136945eb0dffcf53d2e578286bb0ed92',
+                            animal: 'dog',
+                            size: size_choice,
+                            breed: random_breed,
+                            location: zip,
+                            output: 'basic',
+                            format: 'json'
+                        }, success: function (response) {
+                            if (response.petfinder.pet !== undefined) {
+                                var $img = $("<img>");
+
+                                if (response.petfinder.pet.media.photos !== undefined) {
+                                    var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
+                                    $img.attr('src', pet_image);
+                                } else {
+                                    $img.attr('src', "./assets/images/Missing-Image_Dog.png")
+                                }
+                                var pet_name = response.petfinder.pet.name.$t;
+                                var pet_info = response.petfinder.pet.description.$t;
+                                var $carDiv = $("<div class='carousel-item'></div>");
+                                $img.attr('class', 'd-block w-100');
+                                var $carCap = $("<div class='carousel-caption d-none d-md-block'></div>");
+                                var $petName = $("<h3>" + pet_name + "</h3>");
+                                var $petInfo = $("<p>" + pet_info + "</p>");
+                                $carCap.append($petName);
+                                $carCap.append($petInfo);
+                                $carDiv.append($img);
+                                $carDiv.append($carCap);
+                                $(".carousel-inner").append($carDiv);
+                            }
+                        }
+                    });
                 }
             });
         }
@@ -149,12 +196,39 @@ $(document).ready(function () {
                 output: 'basic',
                 format: 'json'
             }, success: function (response) {
-                console.log(response.petfinder.pet, random_breed, random_breed_index);
-                //console.log(response.petfinder.pet.media.photos.photo[0].$t);
-                var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
-                $("#pic2").attr('src', pet_image);
+                if (response.petfinder.pet !== undefined) {
+                    console.log(response.petfinder.pet, random_breed, random_breed_index);
+                    var $img = $("<img>");
+
+                    if (response.petfinder.pet.media.photos !== undefined) {
+                        var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
+                        $img.attr('src', pet_image);
+                    } else {
+                        $img.attr('src', "./assets/images/Missing-Image_Dog.png")
+                    }
+                    var pet_name = response.petfinder.pet.name.$t;
+                    var pet_info = response.petfinder.pet.description.$t;
+                    var $carDiv = $("<div class='carousel-item'></div>");
+                    $img.attr('class', 'd-block w-100');
+                    var $carCap = $("<div class='carousel-caption d-none d-md-block'></div>");
+                    var $petName = $("<h3>" + pet_name + "</h3>");
+                    var $petInfo = $("<p>" + pet_info + "</p>");
+                    $carCap.append($petName);
+                    $carCap.append($petInfo);
+                    $carDiv.append($img);
+                    $carDiv.append($carCap);
+                    $(".carousel-inner").append($carDiv);
+                }
             }
         });
     });
 
 });
+
+{/* <div class="carousel-item">
+<img id="pic2" src="" class="d-block w-100" alt="...">
+<div class="carousel-caption d-none d-md-block">
+    <h3 id="pet_name2">...</h3>
+    <p id="pet_info2">...</p>
+</div>
+</div> */}

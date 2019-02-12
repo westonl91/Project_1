@@ -47,6 +47,7 @@ $.ajax({
     }
 });
 
+
 function new_array(my_array, str) {
     var str = [];
     for (var i = 0; i < my_array.length; i++) {
@@ -105,8 +106,14 @@ function get_choices () {
 }
 
 $(document).ready(function () {
-    $("#Submit").on("click", function () {
+    $("#Submit").on("click", function (event) {
         zip = $("#zip_code_in").val();
+        if (/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)) {
+            return true;
+        } else {
+            event.preventDefault();
+            $("#zipDiv").append("<small class='form-text text-muted'>Please enter a 5 digit zip code.</small>");
+        }
         get_choices();
         var random_breed_index = Math.floor(Math.random() * my_breeds.length);
         var random_breed = full_breeds[my_breeds[random_breed_index]];
