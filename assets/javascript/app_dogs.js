@@ -1,4 +1,4 @@
-var url = '//api.petfinder.com/';
+var url = 'http://api.petfinder.com/';
 
 var full_breeds = [];
 var zip = 0;
@@ -90,6 +90,12 @@ function pick_random() {
 
 $(document).ready(function () {
     $('.carousel').carousel();
+
+    $("#submit_search").on("click", function(event) {
+        event.preventDefault();
+        var search_term = $("#search_term").val();
+        window.open("https://dogtime.com/search?q="+ search_term +"&submit=Search");
+    });
 
     $.ajax({
         url: url + 'breed.list',

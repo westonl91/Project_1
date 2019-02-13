@@ -106,6 +106,12 @@ function get_choices () {
 }
 
 $(document).ready(function () {
+    $("#submit_search").on("click", function(event) {
+        event.preventDefault();
+        var search_term = $("#search_term").val();
+        window.open("https://dogtime.com/search?q="+ search_term +"&submit=Search");
+    });
+
     $("#Submit").on("click", function (event) {
         zip = $("#zip_code_in").val();
         if (/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(zip)) {
