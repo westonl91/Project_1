@@ -11,6 +11,9 @@ var param2_choice = "";
 var my_breeds = [];
 var random_breed_index = 0;
 var random_breed = '';
+var city = "";
+var state = "";
+
 
 // var chosenArray1;
 // var chosenArray2;
@@ -136,9 +139,13 @@ function get_choices() {
     find_my_breeds(chosenArray1, chosenArray2);
 }
 
-// function displayMap() {
-// api key = AIzaSyAlUf5RUzh3aA-AZBvcSmQVd9Vsp4_P7jE
-// }
+function displayMap(city, state) {
+    var mapString = "https://maps.googleapis.com/maps/api/staticmap?center=";
+    var mapString_end = '&zoom=14&size=400x400&key=AIzaSyBVBVX3k8o7D_MqhYpOSYQe3tS6zh9M8Bo';
+    var encoded = encodeURIComponent(city + "," + state);
+    mapString = mapString + encoded + mapString_end;
+    $("#Gmap").attr("src", mapString);
+}
 
 function pick_random() {
     random_breed_index = Math.floor(Math.random() * my_breeds.length);
@@ -172,7 +179,7 @@ $(document).ready(function () {
 
             zip = $.urlParam('zip');
             get_choices();
-            for (var i=0; i<my_breeds.length; i++) {
+            for (var i = 0; i < my_breeds.length; i++) {
                 $("#yourBreeds").append("<p><strong>" + full_breeds[my_breeds[i]] + "</strong></p>");
             }
             pick_random();
@@ -210,7 +217,10 @@ $(document).ready(function () {
                         $("#pet_name1").text(pet_name);
                         $("#dogName").text(pet_name);
 
-                        //displayMap();
+                        city = response.petfinder.pet.contact.city.$t;
+                        state = response.petfinder.pet.contact.state.$t;
+
+                        displayMap(city, state);
 
                         pick_random();
                     }
@@ -255,6 +265,9 @@ $(document).ready(function () {
                                 $carDiv.append($img);
                                 $carDiv.append($carCap);
                                 $(".carousel-inner").append($carDiv);
+
+                                city = response.petfinder.pet.contact.city.$t;
+                                state = response.petfinder.pet.contact.state.$t;
                             }
                         }
                     });
@@ -265,6 +278,7 @@ $(document).ready(function () {
 
     $("#next").on("click", function () {
         $("#dogName").text(pet_name);
+        displayMap(city, state);
         pick_random();
         $.ajax({
             url: url + 'pet.getRandom',
@@ -308,6 +322,9 @@ $(document).ready(function () {
                     $carDiv.append($img);
                     $carDiv.append($carCap);
                     $(".carousel-inner").append($carDiv);
+
+                    city = response.petfinder.pet.contact.city.$t;
+                    state = response.petfinder.pet.contact.state.$t;                    
                 }
             }
         });
@@ -315,7 +332,7 @@ $(document).ready(function () {
 
 
 
-    $("#prev").on("click", function() {
+    $("#prev").on("click", function () {
 
     });
 
