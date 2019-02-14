@@ -9,6 +9,9 @@ var zip = 0;
 var size_choice = "";
 var energy_choice = "";
 var my_breeds = [];
+var checks = 0;
+
+var characteristicChecks = ["#size_check", "#energy_check", "#training_check", "#grooming_check", "#vocality_check"];
 
 var small_dogs = [0, 17, 18, 23, 29, 40, 42, 48, 51, 59, 61, 62, 74, 78, 91, 119, 130, 132, 144, 147, 148, 149, 150, 155, 156, 157, 158, 166, 169, 170, 174, 175, 177, 186, 188, 191, 195, 205, 208, 209, 214, 215, 218, 222, 236, 237, 239, 240, 245, 246, 250, 256];
 var medium_dogs = [1, 2, 7, 11, 14, 19, 20, 21, 39, 45, 47, 52, 54, 67, 70, 76, 77, 83, 84, 90, 95, 97, 98, 102, 104, 110, 118, 123, 124, 127, 136, 137, 154, 167, 168, 171, 178, 180, 181, 183, 185, 189, 192, 194, 206, 211, 217, 219, 225, 228, 231, 232, 244, 247, 248, 252, 254];
@@ -56,61 +59,123 @@ function new_array(my_array, str) {
     console.log(str);
 }
 
-function find_my_breeds(array1, array2) {
-    for (var i=0; i<array1.length; i++) {
-        for (var j=0; j<array2.length; j++){
-            if (array1[i] === array2[j]) {
-                my_breeds.push(array1[i]);
+// function find_my_breeds(array1, array2) {
+//     for (var i = 0; i < array1.length; i++) {
+//         for (var j = 0; j < array2.length; j++) {
+//             if (array1[i] === array2[j]) {
+//                 my_breeds.push(array1[i]);
+//             }
+//         }
+//     }
+// }
+
+
+function size_checked() {
+    if ($("#size_check").prop("checked")) {
+        console.log("size was checked");
+        checks++;
+    } else {
+        console.log("size was unchecked");
+        checks--;
+    }
+    checkFor2();
+}
+
+function energy_checked() {
+    if ($("#energy_check").prop("checked")) {
+        console.log("energy was checked");
+        checks++;
+    } else {
+        console.log("energy was unchecked");
+        checks--;
+    }
+    checkFor2();
+}
+
+function training_checked() {
+    if ($("#training_check").prop("checked")) {
+        console.log("training was checked");
+        checks++;
+    } else {
+        console.log("training unchecked");
+        checks--;
+    }
+    checkFor2();
+}
+
+
+function grooming_checked() {
+    if ($("#grooming_check").prop("checked")) {
+        console.log("grooming was checked");
+        checks++;
+    } else {
+        console.log("grooming unchecked");
+        checks--;
+    }
+    checkFor2();
+}
+
+function vocality_checked() {
+    if ($("#vocality_check").prop("checked")) {
+        console.log("vocality was checked");
+        checks++;
+    } else {
+        console.log("vocality unchecked");
+        checks--;
+    }
+    checkFor2();
+}
+
+
+function checkFor2() {
+    if (checks === 2) {
+        console.log("2 checked!");
+        for (var i = 0; i < characteristicChecks.length; i++) {
+            if ($(characteristicChecks[i]).prop("checked") == false) {
+                $(characteristicChecks[i]).prop("disabled", true);
             }
         }
-    }
-}
-
-function get_choices () {
-    size_choice = $('input[name=size]:checked').val();
-    energy_choice = $('input[name=energy]:checked').val();
-
-    if (size_choice === "S") {
-        if (energy_choice === "low") {
-            find_my_breeds(small_dogs, low_energy);
-        } else if (energy_choice === "moderate") {
-            find_my_breeds(small_dogs, moderate_energy);
-        } else {
-            find_my_breeds(small_dogs, high_energy);
-        }
-    } else if (size_choice === "M") {
-        if (energy_choice === "low") {
-            find_my_breeds(medium_dogs, low_energy);
-        } else if (energy_choice === "moderate") {
-            find_my_breeds(medium_dogs, moderate_energy);
-        } else {
-            find_my_breeds(medium_dogs, high_energy);
-        }
-    } else if (size_choice=== "L") {
-        if (energy_choice === "low") {
-            find_my_breeds(large_dogs, low_energy);
-        } else if (energy_choice === "moderate") {
-            find_my_breeds(large_dogs, moderate_energy);
-        } else {
-            find_my_breeds(large_dogs, high_energy);
-        }
     } else {
-        if (energy_choice === "low") {
-            find_my_breeds(xl_dogs, low_energy);
-        } else if (energy_choice === "moderate") {
-            find_my_breeds(xl_dogs, moderate_energy);
-        } else {
-            find_my_breeds(xl_dogs, high_energy);
-        };
+        for (var i = 0; i < characteristicChecks.length; i++) {
+            $(characteristicChecks[i]).prop("disabled", false);
+        }
     }
 }
+
 
 $(document).ready(function () {
-    $("#submit_search").on("click", function(event) {
+    $("#submit_search").on("click", function (event) {
         event.preventDefault();
         var search_term = $("#search_term").val();
-        window.open("https://dogtime.com/search?q="+ search_term +"&submit=Search");
+        window.open("https://dogtime.com/search?q=" + search_term + "&submit=Search");
     });
+
+    $("#SubmitChecked").on("click", function (event) {
+        event.preventDefault();
+        if (checks !== 2) {
+            $("#characteristics").append("<small class='form-text text-muted'>Please select two options.</small>");
+        } else {
+            $("#characteristics").hide();
+            $("#questions").css("visibility", "visible");
+            if ($("#size_check").prop("checked") == false) {
+                $("#sizeQs").hide();
+            }
+            if ($("#energy_check").prop("checked") == false) {
+                $("#energyQs").hide();
+            }
+            if ($("#training_check").prop("checked") == false) {
+                $("#trainingQs").hide();
+            }
+            if ($("#grooming_check").prop("checked") == false) {
+                $("#groomingQs").hide();
+            }
+            if ($("#vocality_check").prop("checked") == false) {
+                $("#vocalQs").hide();
+            }
+        }
+    });
+
+
 
     $("#Submit").on("click", function (event) {
         zip = $("#zip_code_in").val();
@@ -120,31 +185,31 @@ $(document).ready(function () {
             event.preventDefault();
             $("#zipDiv").append("<small class='form-text text-muted'>Please enter a 5 digit zip code.</small>");
         }
-        get_choices();
-        var random_breed_index = Math.floor(Math.random() * my_breeds.length);
-        var random_breed = full_breeds[my_breeds[random_breed_index]];
+        // get_choices();
+        // var random_breed_index = Math.floor(Math.random() * my_breeds.length);
+        // var random_breed = full_breeds[my_breeds[random_breed_index]];
         // if (energy_choice === "low") {
         //     var random_breed_index = Math.floor(Math.random() * low_energy.length);
         //     var random_breed = full_breeds[low_energy[random_breed_index]];
         // }
 
-        $.ajax({
-            url: url + 'pet.getRandom',
-            jsonp: "callback",
-            dataType: "jsonp",
-            data: {
-                key: '136945eb0dffcf53d2e578286bb0ed92',
-                animal: 'dog',
-                size: size_choice,
-                breed: random_breed,
-                location: zip,
-                output: 'basic',
-                format: 'json'
-            }, success: function (response) {
-                console.log(response.petfinder.pet, random_breed, size_choice);
-                console.log(my_breeds);
-            }
-        });
+        // $.ajax({
+        //     url: url + 'pet.getRandom',
+        //     jsonp: "callback",
+        //     dataType: "jsonp",
+        //     data: {
+        //         key: '136945eb0dffcf53d2e578286bb0ed92',
+        //         animal: 'dog',
+        //         size: size_choice,
+        //         breed: random_breed,
+        //         location: zip,
+        //         output: 'basic',
+        //         format: 'json'
+        //     }, success: function (response) {
+        //         console.log(response.petfinder.pet);
+        //         //console.log(my_breeds);
+        //     }
+        // });
 
     });
 });

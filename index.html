@@ -52,39 +52,114 @@
                                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                             </li>
                         </ul> -->
-                        <form id="search_bar" class="form-inline my-2 my-lg-0">
-                            <input class="form-control mr-sm-2" type="search" placeholder="Search for a breed" aria-label="Search">
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        </form>
+                            <form id="search_bar" class="form-inline my-2 my-lg-0">
+                                <input id="search_term" class="form-control mr-sm-2" type="search" placeholder="Search breed info"
+                                    aria-label="Search">
+                                <button id="submit_search" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
                     </div>
                 </nav>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div id="questions">
 
-                    <br><h3>What is your zip code?</h3><br>
+                <div id="characteristics">
+                    <h3>What are the 2 most important characteristics for you to consider in your search for a new dog?</h3>
+                    <form>
+                        <div class="form-check form-control-lg">
+                            <input class="form-check-input" type="checkbox" value="size" id="size_check" onclick="size_checked()">
+                            <label class="form-check-label" for="size_check">
+                                Size (Small: under 20lbs, Medium: 20 - 60 lbs, Large: 60 - 80 lbs, Extra Large: 80+
+                                lbs)
+                            </label>
+                        </div>
+                        <div class="form-check form-control-lg">
+                            <input class="form-check-input" type="checkbox" value="energy" id="energy_check" onclick="energy_checked()">
+                            <label class="form-check-label" for="energy_check">
+                                Energy level (Low*, Moderate, High)
+                            </label>
+                        </div>
+                        <div class="form-check form-control-lg">
+                            <input class="form-check-input" type="checkbox" value="training" id="training_check"
+                                onclick="training_checked()">
+                            <label class="form-check-label" for="training_check">
+                                Ease of training (Easy, Average, Difficult)
+                            </label>
+                        </div>
+                        <div class="form-check form-control-lg">
+                            <input class="form-check-input" type="checkbox" value="grooming" id="grooming_check"
+                                onclick="grooming_checked()">
+                            <label class="form-check-label" for="grooming_check">
+                                grooming requirements (Low, Moderate, High)
+                            </label>
+                        </div>
+                        <div class="form-check form-control-lg">
+                            <input class="form-check-input" type="checkbox" value="vocality" id="vocality_check"
+                                onclick="vocality_checked()">
+                            <label class="form-check-label" for="vocality_check">
+                                vocality (Low, Moderate, High)
+                            </label>
+                        </div>
+                        <p id="subtext">*very few dog breeds are considered low energy.</p>
+                        <br><input class="btn btn-primary" type="submit" value="Submit" id="SubmitChecked"><br>
+                    </form>
+                </div>
+
+
+                <div id="questions">
+                    <br>
+                    <h3>What is your zip code?</h3><br>
                     <form id="quiz" action="dogs.html">
                         <div class="form-group" id="zipDiv">
                             <input type="text" name="zip" id="zip_code_in"><br>
                         </div>
-
-                        <br><h3>What size dog are you looking for?</h3><br>
-                        <div class="form-group">
-                            <input type="radio" name="size" value="S">Small<br>
-                            <input type="radio" name="size" value="M">Medium<br>
-                            <input type="radio" name="size" value="L">Large<br>
-                            <input type="radio" name="size" value="XL">Extra Large
+                        <div class="Qs" id="sizeQs">
+                            <br>
+                            <h3>What size dog are you looking for?</h3><br>
+                            <div class="form-group">
+                                <input type="radio" name="size" value="S">Small<br>
+                                <input type="radio" name="size" value="M">Medium<br>
+                                <input type="radio" name="size" value="L">Large<br>
+                                <input type="radio" name="size" value="XL">Extra Large
+                            </div>
                         </div>
-
-                        <br><h3>Energy level?</h3><br>
-                        <div class="form-group">
-                            <input type="radio" name="energy" value="low"> Low<br>
-                            <input type="radio" name="energy" value="moderate"> Moderate<br>
-                            <input type="radio" name="energy" value="high"> High
+                        <div class="Qs" id="energyQs">
+                            <br>
+                            <h3>Energy level?</h3><br>
+                            <div class="form-group">
+                                <input type="radio" name="energy" value="low"> Low<br>
+                                <input type="radio" name="energy" value="moderate"> Moderate<br>
+                                <input type="radio" name="energy" value="high"> High
+                            </div>
                         </div>
-
+                        <div class="Qs" id="trainingQs">
+                            <br>
+                            <h3>How much training are you willing to commit to?</h3><br>
+                            <div class="form-group">
+                                <input type="radio" name="training" value="low"> Low<br>
+                                <input type="radio" name="training" value="moderate"> Moderate<br>
+                                <input type="radio" name="training" value="high"> High
+                            </div>
+                        </div>
+                        <div class="Qs" id="groomingQs">
+                            <br>
+                            <h3>How much time are you willing to spend on grooming?</h3><br>
+                            <div class="form-group">
+                                <input type="radio" name="grooming" value="low"> Low<br>
+                                <input type="radio" name="grooming" value="moderate"> Moderate<br>
+                                <input type="radio" name="grooming" value="high"> High
+                            </div>
+                        </div>
+                        <div class="Qs" id="vocalQs">
+                            <br>
+                            <h3>How vocal would you like your pet to be?</h3><br>
+                            <div class="form-group">
+                                <input type="radio" name="vocal" value="low"> Low<br>
+                                <input type="radio" name="vocal" value="moderate"> Moderate<br>
+                                <input type="radio" name="vocal" value="high"> High
+                            </div>
+                        </div>
 
                         <br><input class="btn btn-primary" type="submit" value="Submit" id="Submit"><br>
 

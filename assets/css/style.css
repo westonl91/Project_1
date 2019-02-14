@@ -4,10 +4,12 @@ body{
 }
 
 #questions {
-    background-color: white;
+    background-color:ghostwhite;
+    margin-top: 10px;
+    visibility: hidden;
 }
 
-p {
+.petInfo {
     height: 100px;
     overflow: scroll;
 }
@@ -26,4 +28,14 @@ p {
 #carouselExampleControls {
     border: 10px solid ghostwhite;
     margin-top: 10px;
+}
+
+#characteristics {
+    background-color: ghostwhite;
+    margin-top: 10px;
+}
+
+#subtext {
+    height: auto;
+    overflow: hidden;
 }
