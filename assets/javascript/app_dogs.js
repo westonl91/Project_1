@@ -1,4 +1,18 @@
-var url = 'http://api.petfinder.com/';
+var url = '//api.petfinder.com/';
+
+
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyCxUwHrB5SLQBqnC3rVaWygZuoDBoJqOks",
+    authDomain: "project1-a742d.firebaseapp.com",
+    databaseURL: "https://project1-a742d.firebaseio.com",
+    projectId: "project1-a742d",
+    storageBucket: "project1-a742d.appspot.com",
+    messagingSenderId: "653571598155"
+};
+firebase.initializeApp(config);
+
+var database = firebase.database();
 
 var full_breeds = [];
 var zip = 0;
@@ -14,9 +28,17 @@ var random_breed = '';
 var city = "";
 var state = "";
 
+var cities = [];
+var states = [];
+var petNames = [];
 
-// var chosenArray1;
-// var chosenArray2;
+var petIDs = [];
+var likesIds = [];
+
+var map_counter = 0;
+var petID;
+var likesID;
+
 
 var small_dogs = [0, 17, 18, 23, 29, 40, 42, 48, 51, 59, 61, 62, 74, 78, 91, 119, 130, 132, 144, 147, 148, 149, 150, 155, 156, 157, 158, 166, 169, 170, 174, 175, 177, 186, 188, 191, 195, 205, 208, 209, 214, 215, 218, 222, 236, 237, 239, 240, 245, 246, 250, 256];
 var medium_dogs = [1, 2, 7, 11, 14, 19, 20, 21, 39, 45, 47, 52, 54, 67, 70, 76, 77, 83, 84, 90, 95, 97, 98, 102, 104, 110, 118, 123, 124, 127, 136, 137, 154, 167, 168, 171, 178, 180, 181, 183, 185, 189, 192, 194, 206, 211, 217, 219, 225, 228, 231, 232, 244, 247, 248, 252, 254];
@@ -63,7 +85,6 @@ function find_my_breeds(array1, array2) {
     }
 }
 
-// function grab_arrays(p, pc, arrayName) {
 function grab_arrays(p, pc) {
 
     var chosenArray;
@@ -200,6 +221,41 @@ $(document).ready(function () {
                     if (response.petfinder.pet !== undefined) {
                         console.log(response.petfinder.pet, random_breed, random_breed_index);
 
+
+
+                        petID = response.petfinder.pet.id.$t;
+                        likesID = "#" + petID;
+                        petIDs.push(petID);
+                        likesIds.push(likesID);
+                        $(".heart").on("click", function () {
+
+                            firebase.database().ref(petIDs[0]).once('value').then(function (snapshot) {
+                                var likes = 1;
+
+                                if (snapshot.exists()) {
+                                    likes = likes + snapshot.val().likes;
+                                    // likes++;
+                                    database.ref(petIDs[0]).update({
+                                        likes: likes
+
+                                    });
+                                    // $("#likes1").text("Liked by " + likes + " people!");
+                                } else {
+                                    database.ref(petIDs[0]).update({
+                                        likes: 1
+                                    });
+                                }
+
+                                $("#likes1").text("Liked by " + likes + " people!");
+
+                            });
+
+
+
+                        });
+
+
+
                         if (response.petfinder.pet.media.photos !== undefined) {
                             var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
                             $("#pic1").attr('src', pet_image);
@@ -214,6 +270,7 @@ $(document).ready(function () {
                             $("#pet_info1").text("No description available");
                         }
                         pet_name = response.petfinder.pet.name.$t;
+                        petNames.push(pet_name);
                         $("#pet_name1").text(pet_name);
                         $("#dogName").text(pet_name);
 
@@ -221,8 +278,12 @@ $(document).ready(function () {
                         state = response.petfinder.pet.contact.state.$t;
 
                         displayMap(city, state);
+                        cities.push(city);
+                        states.push(state);
 
                         pick_random();
+                    } else {
+                        console.log(response);
                     }
                     $.ajax({
                         url: url + 'pet.getRandom',
@@ -238,6 +299,14 @@ $(document).ready(function () {
                             format: 'json'
                         }, success: function (response) {
                             if (response.petfinder.pet !== undefined) {
+                                console.log(response.petfinder.pet, random_breed, random_breed_index);
+
+
+                                petID = response.petfinder.pet.id.$t;
+                                likesID = "#" + petID;
+                                petIDs.push(petID);
+                                likesIds.push(likesID);
+
                                 var $img = $("<img>");
                                 var $petInfo = $("<p class='petInfo'></p>");
 
@@ -256,18 +325,32 @@ $(document).ready(function () {
                                 }
 
                                 pet_name = response.petfinder.pet.name.$t;
+                                petNames.push(pet_name);
                                 var $carDiv = $("<div class='carousel-item'></div>");
                                 $img.attr('class', 'd-block w-100');
                                 var $carCap = $("<div class='carousel-caption d-none d-md-block'></div>");
                                 var $petName = $("<h3>" + pet_name + "</h3>");
+                                var $likesDiv = $("<h5 id=" + petID + "></h5>");
+                                var $likeButton = $('<div class="likeButton"><button class="heart"><img src="./assets/images/heart.png"></button></div>');
                                 $carCap.append($petName);
+                                $carCap.append($likesDiv);
+                                $carCap.append($likeButton);
                                 $carCap.append($petInfo);
                                 $carDiv.append($img);
                                 $carDiv.append($carCap);
                                 $(".carousel-inner").append($carDiv);
 
+
+
+
+
+
                                 city = response.petfinder.pet.contact.city.$t;
                                 state = response.petfinder.pet.contact.state.$t;
+                                cities.push(city);
+                                states.push(state);
+                            } else {
+                                console.log(response);
                             }
                         }
                     });
@@ -277,8 +360,36 @@ $(document).ready(function () {
     });
 
     $("#next").on("click", function () {
-        $("#dogName").text(pet_name);
-        displayMap(city, state);
+        map_counter++;
+
+        $(".heart").on("click", function () {
+            console.log(petIDs[map_counter], likesIds[map_counter]);
+            petID = petIDs[map_counter];
+            firebase.database().ref(petID).once('value').then(function (snapshot) {
+                var likes = 1;
+
+                if (snapshot.exists()) {
+                    likes = likes + snapshot.val().likes;
+                    // likes++;
+                    database.ref(petID).update({
+                        likes: likes
+
+                    });
+                    // $("#likes1").text("Liked by " + likes + " people!");
+                } else {
+                    database.ref(petID).update({
+                        likes: 1
+                    });
+                }
+
+                $(likesIds[map_counter]).text("Liked by " + likes + " people!");
+
+            });
+        });
+
+
+        $("#dogName").text(petNames[map_counter]);
+        displayMap(cities[map_counter], states[map_counter]);
         pick_random();
         $.ajax({
             url: url + 'pet.getRandom',
@@ -295,8 +406,12 @@ $(document).ready(function () {
             }, success: function (response) {
                 if (response.petfinder.pet !== undefined) {
                     console.log(response.petfinder.pet, random_breed, random_breed_index);
+
                     var $img = $("<img>");
                     var $petInfo = $("<p class='petInfo'></p>");
+
+                    petID = response.petfinder.pet.id.$t;
+                    likesID = "#" + petID;
 
                     if (response.petfinder.pet.media.photos !== undefined) {
                         var pet_image = response.petfinder.pet.media.photos.photo[2].$t;
@@ -313,18 +428,30 @@ $(document).ready(function () {
                     }
 
                     pet_name = response.petfinder.pet.name.$t;
+                    petNames.push(pet_name);
                     var $carDiv = $("<div class='carousel-item'></div>");
                     $img.attr('class', 'd-block w-100');
                     var $carCap = $("<div class='carousel-caption d-none d-md-block'></div>");
                     var $petName = $("<h3>" + pet_name + "</h3>");
+                    var $likesDiv = $("<h5 id=" + petID + "></h5>");
+                    var $likeButton = $('<div class="likeButton"><button class="heart"><img src="./assets/images/heart.png"></button></div>');
                     $carCap.append($petName);
+                    $carCap.append($likesDiv);
+                    $carCap.append($likeButton);
                     $carCap.append($petInfo);
                     $carDiv.append($img);
                     $carDiv.append($carCap);
                     $(".carousel-inner").append($carDiv);
 
                     city = response.petfinder.pet.contact.city.$t;
-                    state = response.petfinder.pet.contact.state.$t;                    
+                    state = response.petfinder.pet.contact.state.$t;
+                    cities.push(city);
+                    states.push(state);
+
+                    petIDs.push(petID);
+                    likesIds.push(likesID);
+                } else {
+                    console.log(response);
                 }
             }
         });
@@ -333,7 +460,10 @@ $(document).ready(function () {
 
 
     $("#prev").on("click", function () {
-
+        map_counter--;
+        $("#dogName").text(petNames[map_counter]);
+        displayMap(cities[map_counter], states[map_counter]);
     });
 
 });
+
