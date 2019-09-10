@@ -160,13 +160,13 @@ function get_choices() {
     find_my_breeds(chosenArray1, chosenArray2);
 }
 
-function displayMap(city, state) {
-    var mapString = "https://maps.googleapis.com/maps/api/staticmap?center=";
-    var mapString_end = '&zoom=14&size=400x400&key=AIzaSyBVBVX3k8o7D_MqhYpOSYQe3tS6zh9M8Bo';
-    var encoded = encodeURIComponent(city + "," + state);
-    mapString = mapString + encoded + mapString_end;
-    $("#Gmap").attr("src", mapString);
-}
+// function displayMap(city, state) {
+//     var mapString = "https://maps.googleapis.com/maps/api/staticmap?center=";
+//     var mapString_end = '&zoom=14&size=400x400&key=NoneOfYourBusiness';
+//     var encoded = encodeURIComponent(city + "," + state);
+//     mapString = mapString + encoded + mapString_end;
+//     $("#Gmap").attr("src", mapString);
+// }
 
 function pick_random() {
     random_breed_index = Math.floor(Math.random() * my_breeds.length);
@@ -277,7 +277,7 @@ $(document).ready(function () {
                         city = response.petfinder.pet.contact.city.$t;
                         state = response.petfinder.pet.contact.state.$t;
 
-                        displayMap(city, state);
+                        //displayMap(city, state);
                         cities.push(city);
                         states.push(state);
 
@@ -389,7 +389,7 @@ $(document).ready(function () {
 
 
         $("#dogName").text(petNames[map_counter]);
-        displayMap(cities[map_counter], states[map_counter]);
+        //displayMap(cities[map_counter], states[map_counter]);
         pick_random();
         $.ajax({
             url: url + 'pet.getRandom',
@@ -462,7 +462,7 @@ $(document).ready(function () {
     $("#prev").on("click", function () {
         map_counter--;
         $("#dogName").text(petNames[map_counter]);
-        displayMap(cities[map_counter], states[map_counter]);
+        //displayMap(cities[map_counter], states[map_counter]);
     });
 
 });
