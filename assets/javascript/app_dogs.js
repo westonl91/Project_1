@@ -1,9 +1,9 @@
-var url = '//api.petfinder.com/';
+var url = 'http://api.petfinder.com/';
 
 
 // Initialize Firebase
 var config = {
-    apiKey: "AIzaSyCxUwHrB5SLQBqnC3rVaWygZuoDBoJqOks",
+    apiKey: "cn3JYpCuFU3vpey2i1n2A8seh3sG0BqEvVDSy2EIFdLqhWMJeQ",
     authDomain: "project1-a742d.firebaseapp.com",
     databaseURL: "https://project1-a742d.firebaseio.com",
     projectId: "project1-a742d",
